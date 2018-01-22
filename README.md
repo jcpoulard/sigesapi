@@ -1,192 +1,147 @@
-Yii 2 Basic Project Template
-============================
-
-Yii 2 Basic Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
-rapidly creating small projects.
-
-The template contains the basic features including user login/logout and a contact page.
-It includes all commonly used configurations that would allow you to focus on adding new
-features to your application.
-
-[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-app-basic/v/stable.png)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Total Downloads](https://poser.pugx.org/yiisoft/yii2-app-basic/downloads.png)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Build Status](https://travis-ci.org/yiisoft/yii2-app-basic.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-app-basic)
-
-DIRECTORY STRUCTURE
--------------------
-
-      assets/             contains assets definition
-      commands/           contains console commands (controllers)
-      config/             contains application configurations
-      controllers/        contains Web controller classes
-      mail/               contains view files for e-mails
-      models/             contains model classes
-      runtime/            contains files generated during runtime
-      tests/              contains various tests for the basic application
-      vendor/             contains dependent 3rd-party packages
-      views/              contains view files for the Web application
-      web/                contains the entry script and Web resources
+Liste des méthodes de l'API SIGES 
+Version 1.02
+Date de derniere modification : 14 mai 2017
 
 
+1) URL de l'API 
+http://slogipam.com/sigesapi/web/index.php/v1/
 
-REQUIREMENTS
-------------
+2) Méthode fournissant la liste des ecoles ainsi que le nom de leurs bases de données 
+http://slogipam.com/sigesapi/web/index.php/v1/client
+Aucun paramètre d'envoi necessaire 
+retourne les valeurs JSON 
+[
+  {
+    "id": 1,
+    "code_school": "cnr",
+    "school_db": "siges_cnr",
+    "school_name": "College Normalien Reunis",
+    "email": "cnr@logipam.com",
+    "is_public": 1
+  },
+  {
+    "id": 2,
+    "code_school": "demo",
+    "school_db": "siges_demo",
+    "school_name": "Demo",
+    "email": "info@logipam.com",
+    "is_public": 1
+  },
+  {
+    "id": 3,
+    "code_school": "canado",
+    "school_db": "siges_canado",
+    "school_name": "Canado",
+    "email": "",
+    "is_public": 1
+  }
+]
 
-The minimum requirement by this project template that your Web server supports PHP 5.4.0.
+3) Méthode fournissant les informations sur un élève dans une école du système 
+http://slogipam.com/sigesapi/web/index.php/v1/client/studentid
+Evoyer les données  via POST 
+school_name, username, password 
+Retourne un JSON avec ce format 
+{
+  "student": [
+    {
+      "id": "207",
+      "username": "jean207",
+      "first_name": "Jacky",
+      "last_name": "Lindor",
+      "email": "",
+      "gender": "1",
+      "birthday": "0000-00-00",
+      "active": "1",
+      "profil_name": "Guest",
+      "group_name": "Student"
+    }
+  ],
+  "db_name": "siges_demo"
+}
 
+Jeu de test à utiliser 
+school_name = "Demo"
+username = "jean207"
+password = "test"
 
-INSTALLATION
-------------
+4) Méthode retournant l'année académique en cours 
+http://slogipam.com/sigesapi/web/index.php/v1/client/currentacademicyear
+paramètre POST -> db_name
+Jeu de test à utiliser db_name = "siges_demo"
+Retourne le JSON 
+[
+  {
+    "id": "6"
+  }
+]
 
-### Install via Composer
+5) Méthode retournant les notes pour un élève au cours d'une année académique et d'une periode academique
+http://slogipam.com/sigesapi/web/index.php/v1/client/studentgrades
+paramètre GET -> [db_name, id_student, academic_year, academic_period]
+Retourne les valeur JSON pour chaque note 
+{
+    "id": "38545",
+    "student": "20",
+    "subject_name": "Compte Rendu de Lecture",
+    "short_subject_name": "CRDL",
+    "grade_value": "6",
+    "weight": "10",
+    "name_period": "Période 1",
+    "room_name": "Huitième Année",
+    "short_room_name": "8e AF",
+    "validate": "1",
+    "publish": "1",
+    "date_created": "2016-11-04 00:00:00",
+    "date_updated": "2016-12-20 00:00:00",
+    "comment": ""
+  },
+  
+  Une note est visible pour un élève si les valeurs validate et publish sont egales à 1
+  
+6) Methode retournant les periodes academique au cours d'une annee académique
+http://slogipam.com/sigesapi/web/index.php/v1/client/academicperiod
+  parametre GET, [db_name, academic_year]
+  retourne le JSON 
+  
+  {
+    "id": "10",
+    "name_period": "Période 4",
+    "date_start": "2017-03-01",
+    "date_end": "2017-04-13",
+    "is_year": "0",
+    "year": "8"
+  },
 
-If you do not have [Composer](http://getcomposer.org/), you may install it by following the instructions
-at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
+7) Methode retournant les infractions commises par un élève au cours d'une année académique 
+http://slogipam.com/sigesapi/web/index.php/v1/client/studentinfraction
+paramètre GET, [db_name, id_student, academic_year]
+retourne le JSON 
 
-You can then install this project template using the following command:
+[
+    {
+        "id": "438",
+        "student": "500",
+        "name": "Indiscipline I",
+        "value_deduction": "5",
+        "record_by": "Joseph Mario Jules",
+        "incident_date": "2016-09-21",
+        "incident_description": "indiscipline legere",
+        "decision_description": "",
+        "general_comment": ""
+    },
+    {
+        "id": "758",
+        "student": "500",
+        "name": "Sport",
+        "value_deduction": "5",
+        "record_by": "Gina Sully",
+        "incident_date": "2016-10-27",
+        "incident_description": "pas d'uniforme de sport",
+        "decision_description": "",
+        "general_comment": ""
+    },
+    
+]
 
-~~~
-php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
-~~~
-
-Now you should be able to access the application through the following URL, assuming `basic` is the directory
-directly under the Web root.
-
-~~~
-http://localhost/basic/web/
-~~~
-
-
-### Install from an Archive File
-
-Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
-a directory named `basic` that is directly under the Web root.
-
-Set cookie validation key in `config/web.php` file to some random secret string:
-
-```php
-'request' => [
-    // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-    'cookieValidationKey' => '<secret random string goes here>',
-],
-```
-
-You can then access the application through the following URL:
-
-~~~
-http://localhost/basic/web/
-~~~
-
-
-CONFIGURATION
--------------
-
-### Database
-
-Edit the file `config/db.php` with real data, for example:
-
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
-];
-```
-
-**NOTES:**
-- Yii won't create the database for you, this has to be done manually before you can access it.
-- Check and edit the other files in the `config/` directory to customize your application as required.
-- Refer to the README in the `tests` directory for information specific to basic application tests.
-
-
-
-TESTING
--------
-
-Tests are located in `tests` directory. They are developed with [Codeception PHP Testing Framework](http://codeception.com/).
-By default there are 3 test suites:
-
-- `unit`
-- `functional`
-- `acceptance`
-
-Tests can be executed by running
-
-```
-vendor/bin/codecept run
-``` 
-
-The command above will execute unit and functional tests. Unit tests are testing the system components, while functional
-tests are for testing user interaction. Acceptance tests are disabled by default as they require additional setup since
-they perform testing in real browser. 
-
-
-### Running  acceptance tests
-
-To execute acceptance tests do the following:  
-
-1. Rename `tests/acceptance.suite.yml.example` to `tests/acceptance.suite.yml` to enable suite configuration
-
-2. Replace `codeception/base` package in `composer.json` with `codeception/codeception` to install full featured
-   version of Codeception
-
-3. Update dependencies with Composer 
-
-    ```
-    composer update  
-    ```
-
-4. Download [Selenium Server](http://www.seleniumhq.org/download/) and launch it:
-
-    ```
-    java -jar ~/selenium-server-standalone-x.xx.x.jar
-    ``` 
-
-5. (Optional) Create `yii2_basic_tests` database and update it by applying migrations if you have them.
-
-   ```
-   tests/bin/yii migrate
-   ```
-
-   The database configuration can be found at `config/test_db.php`.
-
-
-6. Start web server:
-
-    ```
-    tests/bin/yii serve
-    ```
-
-7. Now you can run all available tests
-
-   ```
-   # run all available tests
-   vendor/bin/codecept run
-
-   # run acceptance tests
-   vendor/bin/codecept run acceptance
-
-   # run only unit and functional tests
-   vendor/bin/codecept run unit,functional
-   ```
-
-### Code coverage support
-
-By default, code coverage is disabled in `codeception.yml` configuration file, you should uncomment needed rows to be able
-to collect code coverage. You can run your tests and collect coverage with the following command:
-
-```
-#collect coverage for all tests
-vendor/bin/codecept run -- --coverage-html --coverage-xml
-
-#collect coverage only for unit tests
-vendor/bin/codecept run unit -- --coverage-html --coverage-xml
-
-#collect coverage for unit and functional tests
-vendor/bin/codecept run functional,unit -- --coverage-html --coverage-xml
-```
-
-You can see code coverage output under the `tests/_output` directory.
+  
