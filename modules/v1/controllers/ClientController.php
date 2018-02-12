@@ -214,7 +214,7 @@ class ClientController extends ActiveController{
            }else{
                $academicYear = ['error'=>'404','errmsg'=>'All the Post value not found !'];
            }
-           return $academicYear;
+           return ['academic_year'=>$academicYear];
        }
        
        /**

@@ -20,6 +20,7 @@ code_school : un code attribue a une ecole par l'API (En general le sigle ou le 
 school_name : Nom de l'ecole au niveau de l'API <br/>
 email: Dans le contexte de l'API, email de l'ecole <br/>
 is_public : L'ecole est authorisé a consommer l'API <br/>
+db_name : Nom de la base de donnees <br/>
 
 <b>Eleves</b> <br/>
 student : Object JSON representant un eleve dans l'API, il est retourne par la methode studentid de l'API (voir les details de cette methode). <br/>
