@@ -77,7 +77,8 @@ class ClientController extends ActiveController{
               if(!array_key_exists('password', $valarray)){
                   $is_key_exist = False;
               }
-          if($is_key_exist) {   
+          if($is_key_exist) { 
+              // Fournir plutot le code de l'ecole (SIGLE) 
           $school_name = $valarray['school_name'];
          // print_r($school_name);
           $username = $valarray['username'];

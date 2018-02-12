@@ -1,6 +1,12 @@
 Liste des méthodes de l'API SIGES 
 Version 1.02
-Date de derniere modification : 14 mai 2017
+Date de derniere modification : 11 fevrier 2018
+
+Glossaire pour API et terminologie SIGES 
+
+SIGES : Système Integré de Gestion Etablissement Scolaire 
+
+
 
 
 1) URL de l'API 
