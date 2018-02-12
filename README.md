@@ -11,27 +11,28 @@ Chaque client  asa propre base de donnees et sa propre instance de SIGES. L'API 
 L'API devrait donnees access a la base de donnees des que le nom d'utilisateur et le mot de passe d'un utilisatreur d'un ecole soit authentifie. 
 Ce glossaire vise a donner une definition complete et comprehensible des termes et terminilogie adopte dans SIGES et dans l'API.  
 
-SIGES : Système Integré de Gestion Etablissement Scolaire 
-users (utilisateurs) : Ensemble des personnes present dans SIGES (Administrateurs scolaire, professeurs, eleves et parents) 
+SIGES : Système Integré de Gestion Etablissement Scolaire <br/>
+users (utilisateurs) : Ensemble des personnes present dans SIGES (Administrateurs scolaire, professeurs, eleves et parents) <br/>
 
-Base de donnees de l'API
-id : element identifiant une table mysql de la base de donnees siges, tous les tables ont pour cle primaire un ID nomme "id", sauf indication speciale. ' 
-code_school : un code attribue a une ecole par l'API (En general le sigle ou le nom courant de l'ecole) 
-school_name : Nom de l'ecole au niveau de l'API
-email: Dans le contexte de l'API, email de l'ecole 
-is_public : L'ecole est authorisé a consommer l'API
+Base de donnees de l'API<br/>
+id : element identifiant une table mysql de la base de donnees siges, tous les tables ont pour cle primaire un ID nomme "id", sauf indication speciale.<br/>
+code_school : un code attribue a une ecole par l'API (En general le sigle ou le nom courant de l'ecole) <br/>
+school_name : Nom de l'ecole au niveau de l'API <br/>
+email: Dans le contexte de l'API, email de l'ecole <br/>
+is_public : L'ecole est authorisé a consommer l'API <br/>
 
-<b>Eleves</b> 
-student : Object JSON representant un eleve dans l'API, il est retourne par la methode studentid de l'API (voir les details de cette methode). 
-id : identifiant unique de l'eleve dans la base de donnees 
-username : nom d'utilisateur de l'etudiant (De tous les utilisateurs de SIGES) 
-first_name : Prenom de l'eleve 
-last_name : Nom de famille de l'eleve
-email : email de l'eleve 
-gender : Sexe de l'eleve (1: masculin et 0 : Feminin) 
-birthday : date de naissance de l'eleve au format Y-m-d (2012-12-31)
-active : Determine si un eleve est actif (a droit de se connecter) dans SIGES
-
+<b>Eleves</b> <br/>
+student : Object JSON representant un eleve dans l'API, il est retourne par la methode studentid de l'API (voir les details de cette methode). <br/>
+id : identifiant unique de l'eleve dans la base de donnees <br/>
+username : nom d'utilisateur de l'etudiant (De tous les utilisateurs de SIGES) <br/>
+first_name : Prenom de l'eleve <br/>
+last_name : Nom de famille de l'eleve<br/>
+email : email de l'eleve <br/>
+gender : Sexe de l'eleve (1: masculin et 0 : Feminin) <br/>
+birthday : date de naissance de l'eleve au format Y-m-d (2012-12-31)<br/>
+active : Determine si un eleve est actif (a droit de se connecter) dans SIGES (1: actif [a droit de se connecter], 0 : Inactif (N'a pas droit de se connecter) <br/>
+profil_name : Nom du profil de l'eleve dans SIGES. <br/>
+group_name : Nom du groupe de l'eleve dans SIGES. <br/>
  
 
 
