@@ -3,9 +3,17 @@ Version 1.02
 Date de derniere modification : 11 fevrier 2018
 
 Glossaire pour API et terminologie SIGES 
+=================== CONTEXTE ET GENERALITES SUR L'API ==========================
 
 SIGES : Système Integré de Gestion Etablissement Scolaire 
+users (utilisateurs) : Ensemble des personnes present dans SIGES (Administrateurs scolaire, professeurs, eleves et parents) 
 
+Base de donnees de l'API
+id : element identifiant une table mysql de la base de donnees siges, tous les tables ont pour cle primaire un ID nomme "id", sauf indication speciale. ' 
+code_school : un code attribue a une ecole par l'API (En general le sigle ou le nom courant de l'ecole) 
+school_name : Nom de l'ecole au niveau de l'API
+email: Dans le contexte de l'API, email de l'ecole 
+is_public : L'ecole est authorisé a consommer l'API
 
 
 
