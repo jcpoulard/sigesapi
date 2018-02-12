@@ -22,7 +22,17 @@ email: Dans le contexte de l'API, email de l'ecole
 is_public : L'ecole est authorisé a consommer l'API
 
 <b>Eleves</b> 
+student : Object JSON representant un eleve dans l'API, il est retourne par la methode studentid de l'API (voir les details de cette methode). 
+id : identifiant unique de l'eleve dans la base de donnees 
+username : nom d'utilisateur de l'etudiant (De tous les utilisateurs de SIGES) 
+first_name : Prenom de l'eleve 
+last_name : Nom de famille de l'eleve
+email : email de l'eleve 
+gender : Sexe de l'eleve (1: masculin et 0 : Feminin) 
+birthday : date de naissance de l'eleve au format Y-m-d (2012-12-31)
+active : Determine si un eleve est actif (a droit de se connecter) dans SIGES
 
+ 
 
 
 1) URL de l'API 
