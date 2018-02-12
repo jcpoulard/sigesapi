@@ -6,6 +6,11 @@ Glossaire pour API et terminologie SIGES
 
 =================== CONTEXTE ET GENERALITES SUR L'API ==========================
 
+SIGES est une application web de gestion des ecoles ecrit en PHP/MySQL avec le framework yii version 1, Les clients de logipam sont des ecoles utilisant SIGES et ont un hebergement sur les serveurs de LOGIPAM. 
+Chaque client  asa propre base de donnees et sa propre instance de SIGES. L'API presentement developpe vise a faire consommer les donnees des bases des divers clients SIGES par une application mobile ou toute autres application faits par des Tird Party. 
+L'API devrait donnees access a la base de donnees des que le nom d'utilisateur et le mot de passe d'un utilisatreur d'un ecole soit authentifie. 
+Ce glossaire vise a donner une definition complete et comprehensible des termes et terminilogie adopte dans SIGES et dans l'API.  
+
 SIGES : Système Integré de Gestion Etablissement Scolaire 
 users (utilisateurs) : Ensemble des personnes present dans SIGES (Administrateurs scolaire, professeurs, eleves et parents) 
 
@@ -15,6 +20,8 @@ code_school : un code attribue a une ecole par l'API (En general le sigle ou le 
 school_name : Nom de l'ecole au niveau de l'API
 email: Dans le contexte de l'API, email de l'ecole 
 is_public : L'ecole est authorisé a consommer l'API
+
+<b>Eleves</b> 
 
 
 
