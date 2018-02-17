@@ -41,22 +41,22 @@ liste_period : valeur de retour de l'API retournant l'ensemble des periodes acad
 academic_period : id d'une periode academique <br/>
  
 <b>Student Grades</b><br/>
-Definition des valeur de retour de la methode http://slogipam.com/sigesapi/web/index.php/v1/client/studentgrades
-student_grade : contient les notes de toutes les matieres d'un eleve pour une periode academique donnees 
-id : ID d'une note 
-student : ID de l'eleve 
-subject_name : Nom de la matiere (nom en forme longue) 
-short_subject_name : Nom court de la matiere
-grade_value : valeur de la note
-weight : coefficient de la note 
-name_period : Nom de la periode d'examen 
-room_name : Nom de la salle de classe 
-short_room_name : Nom en forme courte de la salle de classe 
-validate : si la note est deja valider par l'administration elle est a 1, si non a 0 (Une note valider ne peut plus etre modifie par un prof)
-publish : Si la note est deja publier elle a 1 si non a 0 (Une note non publiee est invisible aux eleves) 
-date_created : Date de creation (saisi de la note) 
-date_update : Date updated (modification de la note) 
-comment : Commentaire sur la note 
+Definition des valeur de retour de la methode http://slogipam.com/sigesapi/web/index.php/v1/client/studentgrades<br/>
+student_grade : contient les notes de toutes les matieres d'un eleve pour une periode academique donnees <br/>
+id : ID d'une note <br/>
+student : ID de l'eleve <br/>
+subject_name : Nom de la matiere (nom en forme longue) <br/>
+short_subject_name : Nom court de la matiere <br/>
+grade_value : valeur de la note <br/>
+weight : coefficient de la note <br/>
+name_period : Nom de la periode d'examen <br/>
+room_name : Nom de la salle de classe <br/>
+short_room_name : Nom en forme courte de la salle de classe <br/>
+validate : si la note est deja valider par l'administration elle est a 1, si non a 0 (Une note valider ne peut plus etre modifie par un prof) <br/>
+publish : Si la note est deja publier elle a 1 si non a 0 (Une note non publiee est invisible aux eleves) <br/>
+date_created : Date de creation (saisi de la note) <br/>
+date_update : Date updated (modification de la note)<br/> 
+comment : Commentaire sur la note <br/>
 
 1) URL de l'API 
 http://slogipam.com/sigesapi/web/index.php/v1/
