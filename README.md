@@ -58,6 +58,21 @@ date_created : Date de creation (saisi de la note) <br/>
 date_update : Date updated (modification de la note)<br/> 
 comment : Commentaire sur la note <br/>
 
+<b>Student discipline</b><br/>
+Definition des valeurs de retour de la methode http://slogipam.com/sigesapi/web/index.php/v1/client/studentinfraction
+
+student_infractions : Contient les infractions d'un eleve pour une annee academique donnee (annee en cours) <br/>
+id : ID de l'infraction <br/>
+student : ID de l'eleve commetant l'infraction <br/>
+name : Le nom de l'incident (de l'infraction saisie dans SIGES) <br/>
+value_deduction : Note deduite de l'infraction, peut etre vide si aucune note n'a ete deduite. <br/>
+incident_date : date que l'infraction a ete commise <br/>
+incident_description : Description de l'incident (l'infraction) <br/>
+decision_description : Description de la decision prise concernant l'infraction <br/>
+general_comment : Tout autres commentaires <br/>
+
+
+
 1) URL de l'API 
 http://slogipam.com/sigesapi/web/index.php/v1/
 
@@ -466,30 +481,29 @@ http://slogipam.com/sigesapi/web/index.php/v1/client/studentinfraction
 paramètre GET, [db_name, id_student, academic_year]
 retourne le JSON 
 
-[
-    {
-        "id": "438",
-        "student": "500",
-        "name": "Indiscipline I",
-        "value_deduction": "5",
-        "record_by": "Joseph Mario Jules",
-        "incident_date": "2016-09-21",
-        "incident_description": "indiscipline legere",
-        "decision_description": "",
-        "general_comment": ""
-    },
-    {
-        "id": "758",
-        "student": "500",
-        "name": "Sport",
-        "value_deduction": "5",
-        "record_by": "Gina Sully",
-        "incident_date": "2016-10-27",
-        "incident_description": "pas d'uniforme de sport",
-        "decision_description": "",
-        "general_comment": ""
-    },
-    
-]
+{
+    "student_infractions": [
+        {
+            "id": "14",
+            "student": "248",
+            "name": "Bagarre",
+            "value_deduction": "1",
+            "incident_date": "2018-02-17",
+            "incident_description": "Neg sa dezond anpil wi",
+            "decision_description": "Nap ba li pinisyon devsan letenel",
+            "general_comment": "Se sa li ye wi"
+        },
+        {
+            "id": "15",
+            "student": "248",
+            "name": "Lecons non sues",
+            "value_deduction": "0",
+            "incident_date": "2018-02-17",
+            "incident_description": "Li pa janm konn leson non",
+            "decision_description": "Gadon ti neg debode ",
+            "general_comment": "Se sa li deborde anpil wi"
+        }
+    ]
+}
 
   

@@ -208,19 +208,23 @@ class ClientController extends ActiveController{
                    $db_name = $valarray['db_name'];
                    $id_student = $valarray['id_student'];
                    $academic_year = $valarray['academic_year'];
+                   try{
                    $student_infractions = (new \yii\db\Query())
-                                    ->select(['record_infraction.id','record_infraction.student','infraction_type.name','record_infraction.value_deduction', 'record_infraction.record_by', 'record_infraction.incident_date', 'record_infraction.incident_description', 'record_infraction.decision_description', 'record_infraction.general_comment'])
+                                    ->select(['record_infraction.id','record_infraction.student','infraction_type.name','record_infraction.value_deduction',  'record_infraction.incident_date', 'record_infraction.incident_description', 'record_infraction.decision_description', 'record_infraction.general_comment'])
                                     ->from("$db_name.record_infraction")
                                     ->join("INNER JOIN","$db_name.infraction_type","infraction_type.id = record_infraction.infraction_type")
                                     ->where(['record_infraction.student'=>$id_student,'record_infraction.academic_period'=>$academic_year])
                                     ->all();
+                   } catch (yii\base\Exception $e){
+                       $student_infractions = ['error'=>'400','errmsg'=>'Error Database. Please contact the API administrator !'];
+                   }
                }else{
                    $student_infractions = ['error'=>'404','errmsg'=>'At least of the Post value not found or spell incorrectly!'];
                }
            }else{
                $student_infractions = ['error'=>'404','errmsg'=>'All the Post value not found !'];
            }
-           return $student_infractions;
+           return ['student_infractions'=>$student_infractions];
        }
        
        /**
@@ -300,6 +304,13 @@ class ClientController extends ActiveController{
            }
            
            
+           
+       }
+       
+       public function  actionStudentEcheances(){
+           \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+           
+           return ['test'=>'Test value'];
            
        }
        
