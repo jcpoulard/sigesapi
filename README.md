@@ -34,8 +34,29 @@ birthday : date de naissance de l'eleve au format Y-m-d (2012-12-31)<br/>
 active : Determine si un eleve est actif (a droit de se connecter) dans SIGES (1: actif [a droit de se connecter], 0 : Inactif (N'a pas droit de se connecter) <br/>
 profil_name : Nom du profil de l'eleve dans SIGES. <br/>
 group_name : Nom du groupe de l'eleve dans SIGES. <br/>
- 
+id_student : Refere a l'id d'un eleve dans le SIGES <br/>
 
+<b>Generalites</b><br/>
+liste_period : valeur de retour de l'API retournant l'ensemble des periodes academique pour une année en cours. <br/>
+academic_period : id d'une periode academique <br/>
+ 
+<b>Student Grades</b><br/>
+Definition des valeur de retour de la methode http://slogipam.com/sigesapi/web/index.php/v1/client/studentgrades
+student_grade : contient les notes de toutes les matieres d'un eleve pour une periode academique donnees 
+id : ID d'une note 
+student : ID de l'eleve 
+subject_name : Nom de la matiere (nom en forme longue) 
+short_subject_name : Nom court de la matiere
+grade_value : valeur de la note
+weight : coefficient de la note 
+name_period : Nom de la periode d'examen 
+room_name : Nom de la salle de classe 
+short_room_name : Nom en forme courte de la salle de classe 
+validate : si la note est deja valider par l'administration elle est a 1, si non a 0 (Une note valider ne peut plus etre modifie par un prof)
+publish : Si la note est deja publier elle a 1 si non a 0 (Une note non publiee est invisible aux eleves) 
+date_created : Date de creation (saisi de la note) 
+date_update : Date updated (modification de la note) 
+comment : Commentaire sur la note 
 
 1) URL de l'API 
 http://slogipam.com/sigesapi/web/index.php/v1/
@@ -74,78 +95,371 @@ retourne les valeurs JSON
 3) Méthode fournissant les informations sur un élève dans une école du système 
 http://slogipam.com/sigesapi/web/index.php/v1/client/studentid
 Evoyer les données  via POST 
-school_name, username, password 
+code_school, username, password 
 Retourne un JSON avec ce format 
 {
-  "student": [
-    {
-      "id": "207",
-      "username": "jean207",
-      "first_name": "Jacky",
-      "last_name": "Lindor",
-      "email": "",
-      "gender": "1",
-      "birthday": "0000-00-00",
-      "active": "1",
-      "profil_name": "Guest",
-      "group_name": "Student"
-    }
-  ],
-  "db_name": "siges_demo"
+    "student_info": [
+        {
+            "id": "248",
+            "username": "carlens248",
+            "first_name": "Gabriel",
+            "last_name": "Alexandre",
+            "email": "",
+            "gender": "0",
+            "birthday": "2008-11-01",
+            "active": "2",
+            "profil_name": "Guest",
+            "group_name": "Student"
+        }
+    ],
+    "db_name": "siges_demo"
 }
 
-Jeu de test à utiliser 
-school_name = "Demo"
-username = "jean207"
-password = "test"
+<b>Jeu de test à utiliser</b>
+ 
+code_school = "demo"
+username = "carlens248"
+password = "password"
 
 4) Méthode retournant l'année académique en cours 
 http://slogipam.com/sigesapi/web/index.php/v1/client/currentacademicyear
 paramètre POST -> db_name
 Jeu de test à utiliser db_name = "siges_demo"
 Retourne le JSON 
-[
-  {
-    "id": "6"
-  }
-]
+{
+    "academic_year": [
+        {
+            "id": "11"
+        }
+    ]
+}
 
 5) Méthode retournant les notes pour un élève au cours d'une année académique et d'une periode academique
 http://slogipam.com/sigesapi/web/index.php/v1/client/studentgrades
 paramètre GET -> [db_name, id_student, academic_year, academic_period]
 Retourne les valeur JSON pour chaque note 
+
 {
-    "id": "38545",
-    "student": "20",
-    "subject_name": "Compte Rendu de Lecture",
-    "short_subject_name": "CRDL",
-    "grade_value": "6",
-    "weight": "10",
-    "name_period": "Période 1",
-    "room_name": "Huitième Année",
-    "short_room_name": "8e AF",
-    "validate": "1",
-    "publish": "1",
-    "date_created": "2016-11-04 00:00:00",
-    "date_updated": "2016-12-20 00:00:00",
-    "comment": ""
-  },
+    "student_grade": [
+        {
+            "id": "14969",
+            "student": "248",
+            "subject_name": "Couture et dessin",
+            "short_subject_name": "COED",
+            "grade_value": "5",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "14987",
+            "student": "248",
+            "subject_name": "Instruction Religieuse",
+            "short_subject_name": "INRE",
+            "grade_value": "6",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15005",
+            "student": "248",
+            "subject_name": "Sport / écriture",
+            "short_subject_name": "SP/",
+            "grade_value": "8",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15022",
+            "student": "248",
+            "subject_name": "Production écrite (Français)",
+            "short_subject_name": "PR",
+            "grade_value": "3",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15040",
+            "student": "248",
+            "subject_name": "Physique et hygiène",
+            "short_subject_name": "PHEH",
+            "grade_value": "8",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15058",
+            "student": "248",
+            "subject_name": "Sciences naturelles",
+            "short_subject_name": "SCNA",
+            "grade_value": "8",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15076",
+            "student": "248",
+            "subject_name": "Civique et morale",
+            "short_subject_name": "CIEM",
+            "grade_value": "16",
+            "weight": "20",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15095",
+            "student": "248",
+            "subject_name": "Connaissances Générales",
+            "short_subject_name": "COG",
+            "grade_value": "7",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15111",
+            "student": "248",
+            "subject_name": "Géographie d'Haiti",
+            "short_subject_name": "G",
+            "grade_value": "5",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15129",
+            "student": "248",
+            "subject_name": "Histoire d'Haiti",
+            "short_subject_name": "HID'",
+            "grade_value": "4",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15147",
+            "student": "248",
+            "subject_name": "Géométrie",
+            "short_subject_name": "GEO",
+            "grade_value": "2",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15166",
+            "student": "248",
+            "subject_name": "Problèmes",
+            "short_subject_name": "PROB",
+            "grade_value": "4",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15184",
+            "student": "248",
+            "subject_name": "Raisonnement logique NOC",
+            "short_subject_name": "RALN",
+            "grade_value": "8",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15199",
+            "student": "248",
+            "subject_name": "Vocabulaire Analyse et conjugaison",
+            "short_subject_name": "VAEC",
+            "grade_value": "4",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15219",
+            "student": "248",
+            "subject_name": "Lecture expliquée",
+            "short_subject_name": "LEEX",
+            "grade_value": "9",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15238",
+            "student": "248",
+            "subject_name": "Production orale",
+            "short_subject_name": "PROR",
+            "grade_value": "8",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        },
+        {
+            "id": "15257",
+            "student": "248",
+            "subject_name": "Langues",
+            "short_subject_name": "LANG",
+            "grade_value": "5",
+            "weight": "10",
+            "name_period": "Periode 1",
+            "room_name": "Première Année",
+            "short_room_name": "1ère AF",
+            "validate": "1",
+            "publish": "1",
+            "date_created": "2017-10-02 00:00:00",
+            "date_updated": "2017-10-02 00:00:00",
+            "comment": ""
+        }
+    ]
+}
   
   Une note est visible pour un élève si les valeurs validate et publish sont egales à 1
   
 6) Methode retournant les periodes academique au cours d'une annee académique
 http://slogipam.com/sigesapi/web/index.php/v1/client/academicperiod
   parametre GET, [db_name, academic_year]
-  retourne le JSON 
+  academic_year : id de l'annee academique en cours  
+  retourne le JSON avec la liste_period 
   
   {
-    "id": "10",
-    "name_period": "Période 4",
-    "date_start": "2017-03-01",
-    "date_end": "2017-04-13",
-    "is_year": "0",
-    "year": "8"
-  },
+    "liste_period": [
+        {
+            "id": "12",
+            "name_period": "Periode 1",
+            "date_start": "2017-09-05",
+            "date_end": "2017-10-31",
+            "is_year": "0",
+            "year": "11"
+        },
+        {
+            "id": "13",
+            "name_period": "Période 2",
+            "date_start": "2017-11-07",
+            "date_end": "2017-12-16",
+            "is_year": "0",
+            "year": "11"
+        },
+        {
+            "id": "14",
+            "name_period": "periode 3",
+            "date_start": "2018-01-09",
+            "date_end": "2018-03-20",
+            "is_year": "0",
+            "year": "11"
+        },
+        {
+            "id": "15",
+            "name_period": "periode 4",
+            "date_start": "2018-03-21",
+            "date_end": "2018-06-15",
+            "is_year": "0",
+            "year": "11"
+        }
+    ]
+}
 
 7) Methode retournant les infractions commises par un élève au cours d'une année académique 
 http://slogipam.com/sigesapi/web/index.php/v1/client/studentinfraction

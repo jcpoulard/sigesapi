@@ -47,19 +47,30 @@ class ClientController extends ActiveController{
       */
         return $rows; 
        }
-       
-       public function getSchoolDb($schoolName){
+       /**
+        * Passe l'acronyme de l'ecole en parametre et retourne le nom de la base de donnees 
+        * @param string $schoolSigle
+        * @return JSON
+        * 
+        */
+       public function getSchoolDb($schoolSigle){
            $schoolDb = (new \yii\db\Query())
                    ->select(['school_db'])
                    ->from('client')
-                   ->where(['school_name'=>$schoolName])
+                   ->where(['code_school'=>$schoolSigle])
                    ->one(); 
-           
-           return $schoolDb['school_db']; 
+           if($schoolDb['school_db']!=null)
+                return $schoolDb['school_db'];
+           else 
+               return False;
        }
        /**
-        * Retourne les informations sur les eleves avec le nom de la base de donnees 
-        * @return type
+        * Retourne les informations suivantes sur un eleve en founrisant a l'API 
+        * code_school : le sigle de l'ecole 
+        * username : le nom d'utilisateur de l'eleve 
+        * password : le mot de passe de l'eleve 
+        * Les informations doivent etre envoyes via POST
+        * @return JSON
         * 
         */
        public function actionStudentid(){
@@ -68,7 +79,7 @@ class ClientController extends ActiveController{
           $valarray = Yii::$app->request->post(); 
           //$db_name = "Demo";
           if(!empty($valarray)){
-              if(!array_key_exists('school_name', $valarray)){
+              if(!array_key_exists('code_school', $valarray)){
                   $is_key_exist = False;
               }
               if(!array_key_exists('username', $valarray)){
@@ -79,12 +90,15 @@ class ClientController extends ActiveController{
               }
           if($is_key_exist) { 
               // Fournir plutot le code de l'ecole (SIGLE) 
-          $school_name = $valarray['school_name'];
+          $code_school = $valarray['code_school'];
          // print_r($school_name);
           $username = $valarray['username'];
           $password = $valarray['password'];
-          $db_name = $this->getSchoolDb($school_name);
-          $studentInfos = (new \yii\db\Query())
+          $db_name = $this->getSchoolDb($code_school);
+          if($db_name==False){
+              $studentInfos = NULL;
+          }else{
+                $studentInfos = (new \yii\db\Query())
                             ->select([$db_name.'.persons.id',$db_name.'.users.username',$db_name.'.persons.first_name',$db_name.'.persons.last_name',$db_name.'.persons.email',$db_name.'.persons.gender',$db_name.'.persons.birthday',$db_name.'.persons.active',$db_name.'.profil.profil_name',$db_name.'.groups.group_name'])
                             ->from("$db_name.users")
                             ->join("INNER JOIN","$db_name.persons","$db_name.persons.id = $db_name.users.person_id")
@@ -92,14 +106,20 @@ class ClientController extends ActiveController{
                             ->join("INNER JOIN","$db_name.groups","$db_name.groups.id = $db_name.users.group_id")
                             ->where(['username'=>$username,'password'=>md5($password)])
                             ->all(); 
-            return array_merge(['student'=>$studentInfos],['db_name'=>$db_name]);                
+          }
+          if(!empty($studentInfos)){
+            return array_merge(['student_info'=>$studentInfos],['db_name'=>$db_name]);
+          }
+          else {
+              return array_merge(['error'=>'404','errmsg'=>'No student found, username, password or database may be inccorect !'],['db_name'=>$db_name]);
+          }
           }else{
-             $studentInfos = ['error'=>'404','errmsg'=>'At least of the Post value not found or spell incorrectly!']; 
+             $studentInfos = ['error'=>'403','errmsg'=>'At least one of the Post value not found or spell incorrectly!']; 
              return array_merge(['student'=>$studentInfos],['db_name'=>$db_name]);
           }
            
           }else{
-              $studentInfos = ['error'=>'404','errmsg'=>'All the Post value not found !'];
+              $studentInfos = ['error'=>'402','errmsg'=>'All the Post value not found !'];
               return array_merge(['student'=>$studentInfos],['db_name'=>$db_name]);
           }
            
@@ -133,7 +153,9 @@ class ClientController extends ActiveController{
                    $id_student = $valarray['id_student'];
                    $academic_year = $valarray['academic_year'];
                    $academic_period = $valarray['academic_period'];
-                   $student_grades = (new \yii\db\Query())
+                   try{
+                       
+                            $student_grades = (new \yii\db\Query())
                                     ->select(['grades.id','grades.student','subjects.subject_name', 'subjects.short_subject_name','grades.grade_value','courses.weight','academicperiods.name_period','rooms.room_name', 'rooms.short_room_name','grades.validate','grades.publish','grades.date_created','grades.date_updated','grades.comment'])
                                     ->from("$db_name.grades")
                                     ->join("INNER JOIN","$db_name.courses","courses.id = grades.course")
@@ -143,13 +165,22 @@ class ClientController extends ActiveController{
                                     ->join("INNER JOIN","$db_name.rooms","rooms.id = courses.room")
                                     ->where(['grades.student'=>$id_student,'courses.academic_period'=>$academic_year,'academicperiods.id'=>$academic_period])
                                     ->all();
+                   if(!empty($student_grades)){
+                        return ['student_grade'=>$student_grades];
+                       }else{
+                           return ['error'=>'404','errmsg'=>'No grade found!'];
+                       }
+                   
+                   } catch (yii\base\Exception $e){
+                       return ['error'=>'400','errmsg'=>'Error SQL contact API administrator !'];
+                   }
                }else{
-                   $student_grades = ['error'=>'404','errmsg'=>'At least of the Post value not found or spell incorrectly!'];
+                   return ['error'=>'403','errmsg'=>'At least of the Post value not found or spell incorrectly!'];
                }
            }else{
-               $student_grades = ['error'=>'404','errmsg'=>'All the Post value not found !'];
+               return ['error'=>'404','errmsg'=>'All the Post value not found !'];
            }
-           return $student_grades;
+           
        }
        
        
@@ -226,26 +257,49 @@ class ClientController extends ActiveController{
            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
            $valarray = Yii::$app->request->get();
            $is_key_exist = True;
+           
            if(!empty($valarray)){
                if(!array_key_exists('db_name', $valarray)){
                   $is_key_exist = False;
               }
+              
               if(!array_key_exists('academic_year', $valarray)){
                   $is_key_exist = False;
               }
               
+              
                if($is_key_exist){
                    $db_name = $valarray['db_name'];
                    $academic_year = $valarray['academic_year'];
-                   $academicPeriod = (new \yii\db\Query())
+                   if($db_name != "" && $academic_year != ""){
+                       try{
+                        $academicPeriod = (new \yii\db\Query())
                                     ->select(['id','name_period','date_start','date_end','is_year','year'])
                                     ->from("$db_name.academicperiods")
                                     ->where("year = $academic_year AND is_year = 0")
                                     ->all();
+                        if(!empty($academicPeriod)){
+                            
+                                return ['liste_period'=>$academicPeriod];
+                        }
+                        else 
+                            return ['error'=>'404','errmsg'=>'No period found for the submitted value !'];
+                       } catch (yii\base\Exception $e){
+                           return ['error'=>'400','errmsg'=>'Error SQL contact API administrator !'];
+                       }
+                   }else{
+                       return ['error'=>'403','errmsg'=>'At least one of  the value submitted not found or summited incorrectly!'];
+                   }
+                    
+                    
+               }else{
+                   return ['error'=>'403','errmsg'=>'At least one of  the value submitted not found or summited incorrectly!'];
                }
+           }else{
+               return ['error'=>'403','errmsg'=>'At least one of  the value submitted not found or summited incorrectly!'];
            }
            
-           return $academicPeriod; 
+           
            
        }
        
