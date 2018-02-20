@@ -306,11 +306,80 @@ class ClientController extends ActiveController{
            
            
        }
-       
+       /**
+        * 
+        * @return type
+        * Retourne les echeances de paiement d'un eleve pour une annee academique donnees 
+        * 
+        */
        public function  actionStudentEcheances(){
            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+           $valarray = Yii::$app->request->get();
+           $is_key_exist = True;
+           if(!empty($valarray)){
+               if(!array_key_exists('db_name', $valarray)){
+                  $is_key_exist = False;
+              }
+              
+              if(!array_key_exists('academic_year', $valarray)){
+                  $is_key_exist = False;
+              }
+              if(!array_key_exists('id_student', $valarray)){
+                  $is_key_exist = False;
+              }
+              if($is_key_exist){
+                $db_name = $valarray['db_name'];
+                $academic_year = $valarray['academic_year'];
+                $id_student = $valarray['id_student']; 
+                try{
+                    /*
+                     * 
+SELECT fees.id, levels.level_name, levels.short_level_name, level_has_person.academic_year, fees_label.fee_label, fees.amount, fees.date_limit_payment, fees.date_create FROM fees 
+INNER JOIN fees_label ON (fees.fee = fees_label.id)
+INNER JOIN levels ON (levels.id = fees.level) 
+INNER JOIN level_has_person ON (level_has_person.level = levels.id)
+INNER JOIN persons ON (level_has_person.students = persons.id)
+WHERE level_has_person.academic_year = 11 AND level_has_person.students = 248
+                     * 
+                     */
+                   $student_echeances = (new \yii\db\Query())
+                                    ->select(['fees.id','levels.level_name','levels.short_level_name','level_has_person.academic_year',  'fees_label.fee_label', 'fees.amount', 'fees.date_limit_payment', 'fees.date_create','fees.checked'])
+                                    ->from("$db_name.fees")
+                                    ->join("INNER JOIN","$db_name.fees_label","fees.fee = fees_label.id")
+                                    ->join("INNER JOIN", "$db_name.levels","levels.id = fees.level")
+                                    ->join("INNER JOIN","$db_name.level_has_person","level_has_person.level = levels.id ")
+                                    ->join("INNER JOIN","$db_name.persons","level_has_person.students = persons.id")
+                                    ->where(['level_has_person.academic_year'=>$academic_year,'level_has_person.students'=>$id_student])
+                                    ->all();
+                   return ['student_echeances'=>$student_echeances];
+                   
+                    } catch(yii\base\Exception $e){
+                            return ['error'=>'400','errmsg'=>'Error SQL contact API administrator !'];
+                    }
+                
+                
+              }else{
+                  return ['error'=>'403','errmsg'=>'At least one of  the value submitted not found or summited incorrectly!'];
+              }
+              
+               
+           }elseif(!$is_key_exist){
+                return ['error'=>'403','errmsg'=>'At least one of  the value submitted not found or summited incorrectly!'];
+           }
            
-           return ['test'=>'Test value'];
+       }
+       
+       public function  actionStudentTransaction(){
+           \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+           
+           return ['test'=>'Transaction'];
+           
+       }
+       
+       public function  actionStudentBalance(){
+           \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+           
+           return ['test'=>'Transaction'];
            
        }
        
