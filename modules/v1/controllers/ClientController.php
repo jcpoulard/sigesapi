@@ -4,6 +4,7 @@ namespace app\modules\v1\controllers;
 use yii\rest\ActiveController; 
 use yii\db\Connection; 
 use Yii; 
+use app\modules\v1\models\History; 
 
 class ClientController extends ActiveController{
     public $modelClass = 'app\modules\v1\models\Client';
@@ -35,7 +36,9 @@ class ClientController extends ActiveController{
         $rows = (new \yii\db\Query())
                 ->select(['persons.id','last_name','first_name'])
                 ->from("$db_name.persons")
-                ->all(); 
+                ->all();
+        // Prendre les informations des utilisateurs de l'API 
+        $this->getUserInfo($_GET, $db_name,__FUNCTION__);
         
         /*
         $rows = (new \yii\db\Query())
@@ -47,6 +50,33 @@ class ClientController extends ActiveController{
       */
         return $rows; 
        }
+       
+       private function getUserInfo($get,$dbname,$method){
+           // prendre les informations sur la requette 
+        $history = new History(); 
+        $data_user = $this->getBrowser(); 
+        $data_user_json = json_encode($data_user); 
+        if(isset($_SERVER)){
+            $ip_user = $_SERVER['REMOTE_ADDR']; 
+        }else {
+            $ip_user = "::"; 
+        }
+        if(isset($get)){
+            $request_data = json_encode($get);  
+        }else{
+            $request_data = "No data parameter  request"; 
+        } 
+        
+        $history->ip_client = $ip_user; 
+        $history->data_client = $data_user_json; 
+        $history->data_request = $request_data; 
+        $history->db_name = $dbname;
+        $history->method_request = $method; 
+        $history->save();
+           
+       }
+       
+       
        /**
         * Passe l'acronyme de l'ecole en parametre et retourne le nom de la base de donnees 
         * @param string $schoolSigle
@@ -76,8 +106,8 @@ class ClientController extends ActiveController{
        public function actionStudentid(){
           \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
           $is_key_exist = True;
-          $valarray = Yii::$app->request->post(); 
-          //$db_name = "Demo";
+          $valarray = Yii::$app->request->get(); 
+         // $db_name = "siges_demo";
           if(!empty($valarray)){
               if(!array_key_exists('code_school', $valarray)){
                   $is_key_exist = False;
@@ -91,10 +121,12 @@ class ClientController extends ActiveController{
           if($is_key_exist) { 
               // Fournir plutot le code de l'ecole (SIGLE) 
           $code_school = $valarray['code_school'];
-         // print_r($school_name);
           $username = $valarray['username'];
           $password = $valarray['password'];
           $db_name = $this->getSchoolDb($code_school);
+           // Prendre les informations des utilisateurs de l'API 
+        $this->getUserInfo($_GET, $db_name,__FUNCTION__);
+          
           if($db_name==False){
               $studentInfos = NULL;
           }else{
@@ -153,6 +185,10 @@ class ClientController extends ActiveController{
                    $id_student = $valarray['id_student'];
                    $academic_year = $valarray['academic_year'];
                    $academic_period = $valarray['academic_period'];
+                   
+                    // Prendre les informations des utilisateurs de l'API 
+                    $this->getUserInfo($_GET, $db_name,__FUNCTION__);
+                    
                    try{
                        
                             $student_grades = (new \yii\db\Query())
@@ -208,6 +244,10 @@ class ClientController extends ActiveController{
                    $db_name = $valarray['db_name'];
                    $id_student = $valarray['id_student'];
                    $academic_year = $valarray['academic_year'];
+                   
+                    // Prendre les informations des utilisateurs de l'API 
+                    $this->getUserInfo($_GET, $db_name,__FUNCTION__);
+                   
                    try{
                    $student_infractions = (new \yii\db\Query())
                                     ->select(['record_infraction.id','record_infraction.student','infraction_type.name','record_infraction.value_deduction',  'record_infraction.incident_date', 'record_infraction.incident_description', 'record_infraction.decision_description', 'record_infraction.general_comment'])
@@ -234,10 +274,14 @@ class ClientController extends ActiveController{
        public function actionCurrentacademicyear(){
            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
            
-           $valarray = Yii::$app->request->post(); 
+           $valarray = Yii::$app->request->get(); 
            if(!empty($valarray)){
                if(array_key_exists('db_name', $valarray)){
                    $db_name = $valarray['db_name'];
+                   
+                     // Prendre les informations des utilisateurs de l'API 
+                    $this->getUserInfo($_GET, $db_name,__FUNCTION__);
+                   
                    $academicYear = (new \yii\db\Query())
                                     ->select('id')
                                     ->from("$db_name.academicperiods")
@@ -275,6 +319,10 @@ class ClientController extends ActiveController{
                if($is_key_exist){
                    $db_name = $valarray['db_name'];
                    $academic_year = $valarray['academic_year'];
+                   
+                    // Prendre les informations des utilisateurs de l'API 
+                    $this->getUserInfo($_GET, $db_name,__FUNCTION__);
+        
                    if($db_name != "" && $academic_year != ""){
                        try{
                         $academicPeriod = (new \yii\db\Query())
@@ -330,18 +378,13 @@ class ClientController extends ActiveController{
               if($is_key_exist){
                 $db_name = $valarray['db_name'];
                 $academic_year = $valarray['academic_year'];
-                $id_student = $valarray['id_student']; 
+                $id_student = $valarray['id_student'];
+                
+                 // Prendre les informations des utilisateurs de l'API 
+                 $this->getUserInfo($_GET, $db_name,__FUNCTION__);
+                
                 try{
-                    /*
-                     * 
-SELECT fees.id, levels.level_name, levels.short_level_name, level_has_person.academic_year, fees_label.fee_label, fees.amount, fees.date_limit_payment, fees.date_create FROM fees 
-INNER JOIN fees_label ON (fees.fee = fees_label.id)
-INNER JOIN levels ON (levels.id = fees.level) 
-INNER JOIN level_has_person ON (level_has_person.level = levels.id)
-INNER JOIN persons ON (level_has_person.students = persons.id)
-WHERE level_has_person.academic_year = 11 AND level_has_person.students = 248
-                     * 
-                     */
+                   
                    $student_echeances = (new \yii\db\Query())
                                     ->select(['fees.id','levels.level_name','levels.short_level_name','level_has_person.academic_year',  'fees_label.fee_label', 'fees.amount', 'fees.date_limit_payment', 'fees.date_create','fees.checked'])
                                     ->from("$db_name.fees")
@@ -369,19 +412,116 @@ WHERE level_has_person.academic_year = 11 AND level_has_person.students = 248
            
        }
        
+       /**
+        * 
+        * @return type
+        */
        public function  actionStudentTransaction(){
            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
            
            return ['test'=>'Transaction'];
            
        }
-       
+       /**
+        * 
+        * @return type
+        */
        public function  actionStudentBalance(){
            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
            
            return ['test'=>'Transaction'];
            
        }
+       /**
+        * 
+        * @return type
+        */
+       private function getBrowser(){
+                $u_agent = $_SERVER['HTTP_USER_AGENT'];
+                $bname = 'Unknown';
+                $platform = 'Unknown';
+                $version= "";
+                $ub = ""; 
+                //First get the platform?
+                if (preg_match('/linux/i', $u_agent)) {
+                    $platform = 'linux';
+                }
+                elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
+                    $platform = 'mac';
+                }
+                elseif (preg_match('/windows|win32/i', $u_agent)) {
+                    $platform = 'windows';
+                }
+
+                // Next get the name of the useragent yes seperately and for good reason
+                if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent))
+                {
+                    $bname = 'Internet Explorer';
+                    $ub = "MSIE";
+                }
+                elseif(preg_match('/Firefox/i',$u_agent))
+                {
+                    $bname = 'Mozilla Firefox';
+                    $ub = "Firefox";
+                }
+                elseif(preg_match('/Chrome/i',$u_agent))
+                {
+                    $bname = 'Google Chrome';
+                    $ub = "Chrome";
+                }
+                elseif(preg_match('/Safari/i',$u_agent))
+                {
+                    $bname = 'Apple Safari';
+                    $ub = "Safari";
+                }
+                elseif(preg_match('/Opera/i',$u_agent))
+                {
+                    $bname = 'Opera';
+                    $ub = "Opera";
+                }
+                elseif(preg_match('/Netscape/i',$u_agent))
+                {
+                    $bname = 'Netscape';
+                    $ub = "Netscape";
+                }
+
+                // finally get the correct version number
+                $known = array('Version', $ub, 'other');
+                $pattern = '#(?<browser>' . join('|', $known) .
+                ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+                if (!preg_match_all($pattern, $u_agent, $matches)) {
+                    // we have no matching number just continue
+                }
+
+                // see how many we have
+                $i = count($matches['browser']);
+                if ($i != 1) {
+                    //we will have two since we are not using 'other' argument yet
+                    //see if version is before or after the name
+                    if (strripos($u_agent,"Version") < strripos($u_agent,$ub)){
+                        $version= $matches['version'][0];
+                    }
+                    else {
+                        $version= $matches['version'][1];
+                    }
+                }
+                else {
+                    $version= $matches['version'][0];
+                }
+
+                // check if we have a number
+                if ($version==null || $version=="") {$version="?";}
+
+                return array(
+                    'userAgent' => $u_agent,
+                    'name'      => $bname,
+                    'version'   => $version,
+                    'platform'  => $platform,
+                    'pattern'    => $pattern
+                );
+            } 
+       
+       
        
        
     
