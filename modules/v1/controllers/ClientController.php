@@ -131,7 +131,7 @@ class ClientController extends ActiveController{
               $studentInfos = NULL;
           }else{
                 $studentInfos = (new \yii\db\Query())
-                            ->select([$db_name.'.persons.id',$db_name.'.users.username',$db_name.'.persons.first_name',$db_name.'.persons.last_name',$db_name.'.persons.email',$db_name.'.persons.gender',$db_name.'.persons.birthday',$db_name.'.persons.active',$db_name.'.profil.profil_name',$db_name.'.groups.group_name'])
+                            ->select([$db_name.'.persons.id',$db_name.'.users.username',$db_name.'.persons.first_name',$db_name.'.persons.last_name',$db_name.'.persons.email', $db_name.'.persons.image',$db_name.'.persons.gender',$db_name.'.persons.birthday',$db_name.'.persons.active',$db_name.'.profil.profil_name',$db_name.'.groups.group_name'])
                             ->from("$db_name.users")
                             ->join("INNER JOIN","$db_name.persons","$db_name.persons.id = $db_name.users.person_id")
                             ->join("INNER JOIN","$db_name.profil","$db_name.profil.id = $db_name.users.profil")
@@ -140,7 +140,8 @@ class ClientController extends ActiveController{
                             ->all(); 
           }
           if(!empty($studentInfos)){
-            return array_merge(['student_info'=>$studentInfos],['db_name'=>$db_name]);
+              $image_link = "https://slogipam.com/$code_school/documents/photo-Uploads/1/".$studentInfos[0]["image"]; 
+            return array_merge(['student_info'=>$studentInfos],['db_name'=>$db_name],["image_url"=>$image_link]);
           }
           else {
               return array_merge(['error'=>'404','errmsg'=>'No student found, username, password or database may be inccorect !'],['db_name'=>$db_name]);
@@ -438,6 +439,7 @@ class ClientController extends ActiveController{
         */
        private function getBrowser(){
                 $u_agent = $_SERVER['HTTP_USER_AGENT'];
+                if(isset($u_agent)){
                 $bname = 'Unknown';
                 $platform = 'Unknown';
                 $version= "";
@@ -519,6 +521,10 @@ class ClientController extends ActiveController{
                     'platform'  => $platform,
                     'pattern'    => $pattern
                 );
+                
+                }else{
+                    return array("userAgent"=>"Not found");
+                } 
             } 
        
        
